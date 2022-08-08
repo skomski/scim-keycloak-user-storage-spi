@@ -27,10 +27,6 @@ import org.keycloak.component.ComponentValidationException;
 import org.keycloak.storage.UserStorageProviderFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import java.util.List;
 
 /**
@@ -45,11 +41,11 @@ public class SCIMUserStorageProviderFactory implements UserStorageProviderFactor
 
 	static {
 		configMetadata = ProviderConfigurationBuilder.create()
-				/* SCIMv2 server url*/
+				/* SCIMv2 server url */
 				.property().name("scimurl")
 				.type(ProviderConfigProperty.STRING_TYPE)
 				.label("SCIM Server URL")
-				.helpText("Backend SCIM Server URL in the format: server.example.com:8080")
+				.helpText("Backend SCIM Server URL in the format: https://server.example.com:8080/scim/v2")
 				.add()
 				/* Login username, used to auth to make HTTP requests */
 				.property().name("loginusername")
@@ -79,10 +75,10 @@ public class SCIMUserStorageProviderFactory implements UserStorageProviderFactor
 		SimpleHttp.Response response;
 
 		try {
-			response = scim.clientRequest("", "GET", null);
+			response = scim.clientRequest("ServiceProviderConfig", "GET", null);
 			response.close();
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new ComponentValidationException("Cannot connect to provided URL!");
 		}
 	}
